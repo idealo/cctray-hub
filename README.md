@@ -23,6 +23,12 @@ for cctray itself this will be:
 Note that cctray-hub will query builds from the main branch per default. 
 If you need other (or even all) branches to get queried as well, feel free to open an issue.
 
+Basic auth can be autoconfigured by setting the following application properties:
+
+`cctray-hub.username=YOUR_USERNAME`
+
+`cctray-hub.password=YOUR_PASSWORD`
+
 ## references
 
 CCTray spec
