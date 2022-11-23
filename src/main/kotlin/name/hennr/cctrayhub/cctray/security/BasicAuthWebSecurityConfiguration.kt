@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @ConditionalOnProperty("cctray-hub.username", "cctray-hub.password")
 class BasicAuthWebSecurityConfiguration(
-    val basicAuthenticationEntryPoint: BasicAuthenticationEntryPoint,
+    val basicAuthenticationEntryPoint: CCTrayBasicAuthenticationEntryPoint,
     @Value("\${cctray-hub.username}") private val username: String,
     @Value("\${cctray-hub.password}") private val password: String
 ) {
