@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="ACCESS" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.access.net.JSONAccessEncoder">
+            <pattern>
+                {
+                "timestamp": "%h %l %u %t &quot;%r&quot; %s %b",
+                  "request": {
+                    "method": "%m",
+                    "uri": "%U%q",
+                    "protocol": "%H"
+                  },
+                  "response": {
+                    "status": "%s",
+                    "length": "%b"
+                  },
+                  "client": {
+                    "address": "%h",
+                    "user": "%u"
+                  }
+                }
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender-ref ref="ACCESS" />
+</configuration>
