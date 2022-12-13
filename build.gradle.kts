@@ -47,7 +47,7 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	testImplementation("de.mkammerer.wiremock-junit5:wiremock-junit5:1.1.0")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("io.projectreactor:reactor-test")
