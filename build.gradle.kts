@@ -36,6 +36,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("ch.qos.logback:logback-classic")
+	implementation("ch.qos.logback:logback-access")
+	implementation("net.logstash.logback:logstash-logback-encoder:7.2")
 	implementation("io.github.microutils:kotlin-logging:3.0.4")
 
 	// caching
