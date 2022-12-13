@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="ACCESS" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.access.net.JSONAccessEncoder">
-            <pattern>
-                {
-                "timestamp": "%h %l %u %t &quot;%r&quot; %s %b",
-                  "request": {
-                    "method": "%m",
-                    "uri": "%U%q",
-                    "protocol": "%H"
-                  },
-                  "response": {
-                    "status": "%s",
-                    "length": "%b"
-                  },
-                  "client": {
-                    "address": "%h",
-                    "user": "%u"
-                  }
-                }
-            </pattern>
+    <appender name="access" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.AccessEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <pattern>
+                    <pattern>
+                        {
+                        "tags": "access-log",
+                        "method": "%m",
+                        "size": "%b",
+                        "code" : "%s",
+                        "@fields.requested_uri": "%U",
+                        "@fields.elapsed_time" : "%D",
+                        "ip": "%a",
+                        "query":"%q",
+                        "referer":"%header{referer}",
+                        "requested_host":"%header{host}",
+                        "timestamp": "%date{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}",
+                        "useragent":"%header{user-agent}",
+                        "Forwarded":"%header{Forwarded}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
         </encoder>
     </appender>
 
-    <appender-ref ref="ACCESS" />
+    <appender-ref ref="access" />
 </configuration>

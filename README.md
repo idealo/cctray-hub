@@ -29,6 +29,10 @@ Basic auth can be autoconfigured by setting the following application properties
 
 `cctray-hub.password=YOUR_PASSWORD`
 
+Access logs via log back can be enabled by setting the following application property:
+
+`cctray-hub.access-log=true`
+
 ## references
 
 CCTray spec

@@ -2,14 +2,24 @@
 <configuration scan="false" scanPeriod="30 seconds" debug="false">
 
     <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-            <jsonFormatter
-                    class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                <prettyPrint>false</prettyPrint>
-            </jsonFormatter>
-            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
-            <appendLineSeparator>true</appendLineSeparator>
-        </layout>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <pattern>
+                    <pattern>
+                        {
+                        "tags": "application-log",
+
+                        "level": "%level",
+                        "logger": "%logger",
+                        "message": "%message",
+                        "thread": "%thread",
+                        "traceId": "%mdc{traceId}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
     </appender>
 
     <root level="INFO">
