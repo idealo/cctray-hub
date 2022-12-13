@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="30 seconds" debug="false">
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <withJansi>true</withJansi>
-        <encoder>
-            <pattern>%highlight(%.-1level) %date{HH:mm:ss.SSS} %X{request-url} [%30.30logger] %msg%n%rEx{full,
-                org.springframework, sun.reflect, java.lang.reflect, rx.internal, com.fasterxml.jackson.databind.deser}
-            </pattern>
+    <appender name="json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <pattern>
+                    <pattern>
+                        {
+                        "tags": "application-log",
+
+                        "level": "%level",
+                        "logger": "%logger",
+                        "message": "%message",
+                        "thread": "%thread",
+                        "traceId": "%mdc{traceId}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
         </encoder>
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="json" />
     </root>
 
 </configuration>
