@@ -32,7 +32,7 @@ jobs:
       run: ./gradlew build
 
     - name: build docker image
-      run: docker build -t ghcr.io/idealo/cctray-hub:${{github.sha}} .
+      run: docker build -t ghcr.io/idealo/cctray-hub:latest -t ghcr.io/idealo/cctray-hub:${{github.sha}} .
 
-    - name: push images
-      run: docker push ghcr.io/idealo/cctray-hub:${{github.sha}}
+    - name: push image
+      run: docker image push --all-tags ghcr.io/idealo/cctray-hub
