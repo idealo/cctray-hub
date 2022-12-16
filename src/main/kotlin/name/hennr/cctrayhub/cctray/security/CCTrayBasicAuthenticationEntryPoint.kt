@@ -1,11 +1,11 @@
 package name.hennr.cctrayhub.cctray.security
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint
 import org.springframework.stereotype.Component
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Component
 @ConditionalOnProperty("cctray-hub.username", "cctray-hub.password")

@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.7.5"
+	id("org.springframework.boot") version "3.0.0"
 	id("io.spring.dependency-management") version "1.1.0"
-	id("org.jetbrains.kotlin.jvm") version "1.6.21"
-	id("org.jetbrains.kotlin.plugin.spring") version "1.6.21"
+	id("org.jetbrains.kotlin.jvm") version "1.7.21"
+	id("org.jetbrains.kotlin.plugin.spring") version "1.7.21"
 	id("com.adarshr.test-logger") version "3.2.0"
 }
 
@@ -46,7 +46,7 @@ dependencies {
 	// metrics
 	implementation("io.micrometer:micrometer-registry-prometheus")
 
-	testImplementation("de.mkammerer.wiremock-junit5:wiremock-junit5:1.1.0")
+	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")

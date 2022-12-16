@@ -12,7 +12,7 @@ class DefaultNoAuthWebSecurityConfiguration {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeRequests().anyRequest().permitAll()
+        http.authorizeHttpRequests().anyRequest().permitAll()
         return http.build()
     }
 
