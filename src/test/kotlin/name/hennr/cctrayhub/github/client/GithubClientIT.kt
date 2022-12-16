@@ -1,14 +1,14 @@
 package name.hennr.cctrayhub.github.client
 
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration
-import de.mkammerer.wiremock.WireMockExtension
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
+import com.github.tomakehurst.wiremock.junit5.WireMockTest
 import name.hennr.cctrayhub.github.dto.GithubRepository
 import name.hennr.cctrayhub.github.dto.GithubWorkflowRun
 import name.hennr.cctrayhub.github.dto.GithubWorkflowRunsResponse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
@@ -18,13 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.test.StepVerifier
 
 @SpringBootTest
+@WireMockTest
 class GithubClientIT {
-
-    companion object {
-        @JvmField
-        @RegisterExtension
-        var wireMock = WireMockExtension(WireMockConfiguration.options().dynamicPort())
-    }
 
     // use the spring-boot preconfigured webClient which honors the spring.codec.max-in-memory-size application property
     @Autowired
@@ -33,9 +28,9 @@ class GithubClientIT {
     lateinit var githubClient: GithubClient
 
     @BeforeEach
-    fun `configure githubClient to connect to WireMock`() {
+    fun `configure githubClient to connect to WireMock`(wireMockRuntimeInfo: WireMockRuntimeInfo) {
         githubClient = GithubClient(
-            githubApiBaseUrl = wireMock.baseUrl(),
+            githubApiBaseUrl = wireMockRuntimeInfo.httpBaseUrl,
             githubBearerToken = "666",
             webClientBuilder = webClientBuilder
         )
@@ -72,7 +67,7 @@ class GithubClientIT {
     fun `translates a running build from the github api to an internal GithubWorkflowRun object`() {
         // given
         val fileContent = this::class.java.getResource("/githubWorkflowResponseWithCurrentlyRunningBuild.json").readBytes()
-        wireMock.stubFor(
+        stubFor(
             // ignoring query params like branch or per_page here
             get(urlPathMatching("^/repos/hennr/series-stalker/actions/workflows/maven.yml/runs"))
                 .willReturn(
@@ -112,7 +107,7 @@ class GithubClientIT {
         // when
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
         // then
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
                 .withHeader("Accept", equalTo("application/vnd.github.v3+json"))
         )
     }
@@ -124,7 +119,7 @@ class GithubClientIT {
         // when
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
         // then
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
                 .withHeader(HttpHeaders.AUTHORIZATION, equalTo("Bearer 666"))
         )
     }
@@ -135,7 +130,7 @@ class GithubClientIT {
         val githubWorkflowUrl = aMockedGithubApiReturningASuccessfulBuild("hennr", "series-stalker", "maven.yml")
         // expect
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withoutHeader("If-None-Match")
         )
     }
@@ -146,12 +141,12 @@ class GithubClientIT {
         val githubWorkflowUrl = aMockedGithubApiReturningASuccessfulBuild("hennr", "series-stalker", "maven.yml", "expectedEtag")
         // first request
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withoutHeader("If-None-Match")
         )
         // second request
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withHeader("If-None-Match", equalTo("expectedEtag"))
         )
     }
@@ -164,12 +159,12 @@ class GithubClientIT {
             "firstEtag")
         // first request
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withoutHeader("If-None-Match")
         )
         // second request
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withHeader("If-None-Match", equalTo("firstEtag"))
         )
 
@@ -179,12 +174,12 @@ class GithubClientIT {
             "secondEtag")
         // first request
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withHeader("If-None-Match", equalTo("firstEtag"))
         )
         // second request; new ETAG expected
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
-        wireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
+        WireMock.verify(getRequestedFor(urlPathMatching("^$githubWorkflowUrl")) // ignoring query params like branch or per_page here
             .withHeader("If-None-Match", equalTo("secondEtag"))
         )
     }
@@ -196,7 +191,7 @@ class GithubClientIT {
         // when
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
         // then
-        wireMock.verify(
+        WireMock.verify(
             getRequestedFor(urlPathMatching("^$githubWorkflowUrl"))
                 .withQueryParam("per_page", equalTo("1"))
         )
@@ -209,7 +204,7 @@ class GithubClientIT {
         // when
         githubApiGetsRequestedFor("hennr", "series-stalker", "maven.yml")
         // then
-        wireMock.verify(
+        WireMock.verify(
             getRequestedFor(urlPathMatching("^$githubWorkflowUrl"))
                 .withQueryParam("branch", equalTo("main"))
         )
@@ -219,7 +214,7 @@ class GithubClientIT {
     fun `handles API timeout by sending a empty response`() {
         // given
         val fileContent = this::class.java.getResource("/githubWorkflowResponse.json").readBytes()
-        wireMock.stubFor(
+        stubFor(
             // ignoring query params here
             get(urlPathMatching("^/repos/hennr/series-stalker/actions/workflows/maven.yml/runs"))
                 .willReturn(
@@ -244,7 +239,7 @@ class GithubClientIT {
     fun `return empty response for responses other than 200 github responses`() {
         // given
         val fileContent = this::class.java.getResource("/githubWorkflowResponse.json").readBytes()
-        wireMock.stubFor(
+        stubFor(
             // ignoring query params here
             get(urlPathMatching("^/repos/hennr/series-stalker/actions/workflows/maven.yml/runs"))
                 .willReturn(
@@ -270,7 +265,7 @@ class GithubClientIT {
         returnedEtag: String = "baeea7ccdd95f7d5c1e71d011182bf91f794dd860bca8e8938da7de1cca69790"): String {
         val url = "/repos/$githubGroup/$githubRepo/actions/workflows/$githubWorkflowNameOrId/runs"
         val fileContent = this::class.java.getResource("/githubWorkflowResponse.json").readBytes()
-        wireMock.stubFor(
+        stubFor(
             get(urlPathMatching("^$url")) // ignoring query parameters for all test where this is not relevant
                 .willReturn(
                     aResponse()

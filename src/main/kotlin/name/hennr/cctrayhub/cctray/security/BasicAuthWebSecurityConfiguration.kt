@@ -23,8 +23,8 @@ class BasicAuthWebSecurityConfiguration(
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeRequests()
-            .antMatchers("/cctray/**").authenticated()
+        http.authorizeHttpRequests()
+            .requestMatchers("/cctray/**").authenticated()
             .anyRequest().permitAll()
             .and()
             .httpBasic()
