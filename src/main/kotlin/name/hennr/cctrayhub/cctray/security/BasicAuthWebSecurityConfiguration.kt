@@ -4,46 +4,51 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
-import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.security.web.server.authentication.HttpBasicServerAuthenticationEntryPoint
 
 
 @Configuration
+@EnableWebFluxSecurity
 @ConditionalOnProperty("cctray-hub.username", "cctray-hub.password")
 class BasicAuthWebSecurityConfiguration(
-    val basicAuthenticationEntryPoint: CCTrayBasicAuthenticationEntryPoint,
     @Value("\${cctray-hub.username}") private val username: String,
     @Value("\${cctray-hub.password}") private val password: String
 ) {
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests()
-            .requestMatchers("/cctray/**").authenticated()
-            .anyRequest().permitAll()
-            .and()
+    fun springSecurityFilterChain(http: ServerHttpSecurity, httpBasicServerAuthenticationEntryPoint: HttpBasicServerAuthenticationEntryPoint): SecurityWebFilterChain {
+        http
+            .authorizeExchange { exchanges: AuthorizeExchangeSpec ->
+                exchanges
+                    .pathMatchers("/cctray/**").authenticated()
+                    .anyExchange().permitAll()
+            }
             .httpBasic()
-            .authenticationEntryPoint(basicAuthenticationEntryPoint)
+            .authenticationEntryPoint(httpBasicServerAuthenticationEntryPoint)
         return http.build()
     }
 
     @Bean
-    fun userDetailsService(passwordEncoder: PasswordEncoder): InMemoryUserDetailsManager {
-        val user: UserDetails = User
-            .withUsername(username)
-            .password(passwordEncoder.encode(password))
-            .roles("USER_ROLE")
+    fun userDetailsService(): MapReactiveUserDetailsService? {
+        val user = User.withDefaultPasswordEncoder()
+            .username(username)
+            .password(password)
+            .roles("USER")
             .build()
-        return InMemoryUserDetailsManager(user)
+        return MapReactiveUserDetailsService(user)
     }
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
+    fun httpBasicServerAuthenticationEntryPoint(): HttpBasicServerAuthenticationEntryPoint {
+        var entryPoint = HttpBasicServerAuthenticationEntryPoint()
+        entryPoint.setRealm("cctray-hub")
+        return entryPoint
     }
+
 }

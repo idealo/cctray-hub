@@ -6,24 +6,23 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic
-
+import org.springframework.security.test.context.support.WithAnonymousUser
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.TestPropertySource
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+
+import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
 @TestPropertySource(properties = ["cctray-hub.username=test_username", "cctray-hub.password=test_password"])
-@AutoConfigureMockMvc
 class CctrayBasicAuthIT {
 
     @Autowired
-    private lateinit var mockMvc: MockMvc
+    private lateinit var webTestClient: WebTestClient
 
     @MockBean
     private lateinit var cctrayService: CctrayService
@@ -34,27 +33,38 @@ class CctrayBasicAuthIT {
     }
 
     @Test
+    @WithAnonymousUser
     fun `returns 200 for unprotected endpoint`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/actuator"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        webTestClient.get()
+            .uri("/actuator")
+            .exchange()
+            .expectStatus().isOk
     }
 
     @Test
+    @WithAnonymousUser
     fun `returns WWW-Authenticate response header for unauthenticated call`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/cctray/group/repo/workflow.yml"))
-            .andExpect(MockMvcResultMatchers.header().exists("WWW-Authenticate"))
+        webTestClient.get()
+            .uri("/cctray/group/repo/workflow.yml")
+            .exchange()
+            .expectHeader().exists("WWW-Authenticate")
     }
 
     @Test
+    @WithAnonymousUser
     fun `returns 401 for unauthenticated call`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/cctray/group/repo/workflow.yml"))
-            .andExpect(MockMvcResultMatchers.status().isUnauthorized)
+        webTestClient.get()
+            .uri("/cctray/group/repo/workflow.yml")
+            .exchange()
+            .expectStatus().isUnauthorized
     }
 
     @Test
+    @WithMockUser
     fun `returns 200 for authenticated call`() {
-        mockMvc.perform(MockMvcRequestBuilders.get("/cctray/group/repo/workflow.yml")
-            .with(httpBasic("test_username","test_password")))
-            .andExpect(MockMvcResultMatchers.status().isOk)
+        webTestClient.get()
+            .uri("/cctray/group/repo/workflow.yml")
+            .exchange()
+            .expectStatus().isOk
     }
 }
