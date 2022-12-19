@@ -13,9 +13,10 @@ class NettyAccessLogEventJsonProvider : AbstractJsonProvider<ILoggingEvent>() {
     override fun writeTo(generator: JsonGenerator, event: ILoggingEvent) {
         if (event.loggerName == NETTY_ACCESS_LOGGER_NAME) {
             val (remoteHost, method, contentLength, statusCode, uri) = event.argumentArray.slice(IntRange(0, 5))
-            val (requestDuration, _, host, referer, useragent) = event.argumentArray.slice(IntRange(5, 10))
+            val (requestDuration, timestamp, host, referer, useragent) = event.argumentArray.slice(IntRange(5, 10))
             val forwarded = event.argumentArray[10]
 
+            generator.writeObjectField("@timestamp", timestamp)
             generator.writeObjectField("ip", remoteHost)
             generator.writeObjectField("method", method)
             generator.writeObjectField("size", contentLength.toString())

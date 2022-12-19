@@ -24,7 +24,7 @@ class NettyWebServerAccessLoggingCustomizer: WebServerFactoryCustomizer<NettyRea
                     logArguments.status(),
                     logArguments.uri(),
                     logArguments.duration(),
-                    logArguments.accessDateTime(),
+                    logArguments.accessDateTime().toString(),
                     logArguments.requestHeader("host"),
                     logArguments.requestHeader("referer"),
                     logArguments.requestHeader("user-agent"),
