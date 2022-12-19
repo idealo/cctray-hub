@@ -1,18 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="30 seconds" debug="false">
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <withJansi>true</withJansi>
-        <encoder>
-            <pattern>%highlight(%.-1level) %date{HH:mm:ss.SSS} %X{request-url} [%30.30logger] %msg%n%rEx{full,
-                org.springframework, sun.reflect, java.lang.reflect, rx.internal, com.fasterxml.jackson.databind.deser}
-            </pattern>
-        </encoder>
-    </appender>
+    <springProfile name="default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <withJansi>true</withJansi>
+            <encoder>
+                <pattern>%highlight(%.-1level) %date{HH:mm:ss.SSS} %X{request-url} [%30.30logger] %msg%n%rEx{full,
+                    org.springframework, sun.reflect, java.lang.reflect, rx.internal,
+                    com.fasterxml.jackson.databind.deser}
+                </pattern>
+            </encoder>
+        </appender>
+    </springProfile>
+
+    <springProfile name="json-log-format">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp/>
+                    <pattern>
+                        <pattern>
+                            {
+                            "tags": "application-log",
+                            "level": "%level",
+                            "logger": "%logger",
+                            "message": "%message",
+                            "thread": "%thread",
+                            "traceId": "%mdc{traceId}"
+                            }
+                        </pattern>
+                    </pattern>
+                </providers>
+            </encoder>
+        </appender>
+    </springProfile>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
+
+    <springProfile name="json-log-format">
+        <appender name="accessConsole" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+
+                    <pattern>
+                        <pattern>
+                            {
+                            "tags": "access-log",
+                            "logger": "%logger",
+                            "thread": "%thread",
+                            "timestamp": "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZ}"
+                            }
+                        </pattern>
+                    </pattern>
+                    <provider class="name.hennr.cctrayhub.cctray.logging.NettyAccessLogEventJsonProvider"/>
+                </providers>
+            </encoder>
+        </appender>
+
+        <appender name="access" class="ch.qos.logback.classic.AsyncAppender">
+            <appender-ref ref="accessConsole"/>
+        </appender>
+
+        <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
+            <appender-ref ref="access"/>
+        </logger>
+    </springProfile>
 
 
 </configuration>

@@ -29,9 +29,9 @@ Basic auth can be autoconfigured by setting the following application properties
 
 `cctray-hub.password=YOUR_PASSWORD`
 
-Access logs via log back can be enabled by setting the following application property:
+Access logs via log back and JSON log format can be enabled by setting the following profile:
 
-`cctray-hub.access-log=true`
+`SPRING_PROFILES_ACTIVE=json-log-format`
 
 ## references
 
