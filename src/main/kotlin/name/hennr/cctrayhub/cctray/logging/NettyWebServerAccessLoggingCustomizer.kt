@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 import reactor.netty.http.server.HttpServer
 import reactor.netty.http.server.logging.AccessLog
 import reactor.netty.http.server.logging.AccessLogArgProvider
+import java.time.format.DateTimeFormatter
 
 
 @Component
@@ -24,7 +25,7 @@ class NettyWebServerAccessLoggingCustomizer: WebServerFactoryCustomizer<NettyRea
                     logArguments.status(),
                     logArguments.uri(),
                     logArguments.duration(),
-                    logArguments.accessDateTime().toString(),
+                    logArguments.accessDateTime()?.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                     logArguments.requestHeader("host"),
                     logArguments.requestHeader("referer"),
                     logArguments.requestHeader("user-agent"),
