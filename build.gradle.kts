@@ -10,15 +10,9 @@ plugins {
 
 group = "name.hennr"
 
-// update gradle (always the ALL distribution) via
-// ./gradlew wrapper --gradle-version 7.x.x
-tasks.named<Wrapper>("wrapper") {
-	distributionType = Wrapper.DistributionType.ALL
-}
-
 kotlin {
 	jvmToolchain {
-		(this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
+		this.languageVersion.set(JavaLanguageVersion.of(17))
 	}
 }
 
@@ -55,9 +49,11 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
-	}
+    kotlinOptions {
+        freeCompilerArgs = listOf(
+            "-Xjsr305=strict", "-Xbackend-threads=2"
+        )
+    }
 }
 
 tasks.withType<Test> {
