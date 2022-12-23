@@ -5,6 +5,10 @@ in tools like [BuildNotify](https://anaynayak.github.io/buildnotify/) or [ccmenu
 
 <img alt="buildnotify example" src="buildnotify.png">
 
+## where to find it
+
+We provide docker images over here: https://hub.docker.com/r/hennr/cctray-hub/tags
+
 ## how to use
 
 cctray-hub provides dynamic URLs based on three strings that you need to provide:
@@ -23,13 +27,24 @@ for cctray itself this will be:
 Note that cctray-hub will query builds from the main branch per default. 
 If you need other (or even all) branches to get queried as well, feel free to open an issue.
 
+### accessing private repositories
+
+If you want cctray-hub to translate private github actions into the cctray format, you need to provide a PAT that has read permissions for the repos.
+Provide it e.g. in the application.properties or as an env variable like this:
+
+`github.pat.bearer.token=YOUR_PAT`
+
+### protecting the endpoints with basic auth
+
 Basic auth can be autoconfigured by setting the following application properties:
 
 `cctray-hub.username=YOUR_USERNAME`
 
 `cctray-hub.password=YOUR_PASSWORD`
 
-Access logs via log back and JSON log format can be enabled by setting the following profile:
+### access logs in JSON format
+
+Access logs via logback and JSON log format can be enabled by setting the following profile:
 
 `SPRING_PROFILES_ACTIVE=json-log-format`
 
