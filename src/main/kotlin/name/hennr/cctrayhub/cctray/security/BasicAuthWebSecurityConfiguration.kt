@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.HttpBasicServerAuthenticationEntryPoint
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository
 
 
 @Configuration
@@ -29,6 +30,7 @@ class BasicAuthWebSecurityConfiguration(
                     .pathMatchers("/cctray/**").authenticated()
                     .anyExchange().permitAll()
             }
+            .securityContextRepository(WebSessionServerSecurityContextRepository())
             .httpBasic()
             .authenticationEntryPoint(httpBasicServerAuthenticationEntryPoint)
         return http.build()
