@@ -30,6 +30,19 @@
                             }
                         </pattern>
                     </pattern>
+
+                    <stackTrace>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <rootCauseFirst>true</rootCauseFirst>
+                            <exclude>^sun\.reflect\..*</exclude>
+                            <exclude>^java\.lang\.reflect\..*</exclude>
+                            <exclude>^org\.springframework\..*</exclude>
+                            <exclude>^org\.apache\.catalina\..*</exclude>
+                            <exclude>^rx\.internal\..*</exclude>
+                            <exclude>^com\.fasterxml\.jackson\.databind\.deser\..*</exclude>
+                        </throwableConverter>
+                    </stackTrace>
+
                 </providers>
             </encoder>
         </appender>
