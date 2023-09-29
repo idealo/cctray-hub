@@ -31,7 +31,7 @@ jobs:
       run: ./gradlew build
 
     - name: build docker image
-      run: docker build --platform=linux/arm64 -t hennr/cctray-hub:latest -t hennr/cctray-hub:$(date +%s) .
+      run: docker build -t hennr/cctray-hub:latest -t hennr/cctray-hub:$(date +%s) .
 
     - name: push image
       run: docker image push --all-tags hennr/cctray-hub
