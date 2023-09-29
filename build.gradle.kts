@@ -32,7 +32,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("ch.qos.logback:logback-classic")
 	implementation("ch.qos.logback:logback-access")
-	implementation("net.logstash.logback:logstash-logback-encoder:7.3")
+	implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
 
 	// caching
