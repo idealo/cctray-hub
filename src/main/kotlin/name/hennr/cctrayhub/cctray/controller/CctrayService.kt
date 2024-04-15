@@ -17,7 +17,7 @@ class CctrayService(val githubClient: GithubClient) {
         githubRepo: String,
         githubWorkflowNameOrId: String
     ): Mono<String> {
-        logger.info("requested repo: $githubGroup/$githubRepo/$githubWorkflowNameOrId")
+        logger.debug("requested repo: $githubGroup/$githubRepo/$githubWorkflowNameOrId")
         return githubClient.getWorkflowRuns(githubGroup, githubRepo, githubWorkflowNameOrId).map {
             // (cached) success http code from github && at least one existent run for the requested branch (already)
             if ((it.githubResponseCode == SUCCESS || it.githubResponseCode == CACHED) && it.latestWorkflowRun != null) {
