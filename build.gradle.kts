@@ -44,7 +44,7 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-prometheus")
 
 	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
-	testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("io.projectreactor:reactor-test")
