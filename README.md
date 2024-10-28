@@ -29,8 +29,13 @@ If you need other (or even all) branches to get queried as well, feel free to op
 
 ### accessing private repositories
 
-If you want cctray-hub to translate private github actions into the cctray format, you need to provide a PAT that has read permissions for the repos.
-Provide it as an env variable like this:
+If you want cctray-hub to read private github repos / actions, you need to provide a PAT that grants access to these repos.
+A classic token with the `workflow` scope should be sufficient. The `repo` scope will be enabled automatically by github.
+Don't forget to authorize the token for the repos you want to access.
+
+![token-permissions.png](token-permissions.png)
+
+Provide that token as an env variable like this then, when starting cctray-hub:
 
 `GITHUB_API_TOKEN=YOUR_PAT`
 
