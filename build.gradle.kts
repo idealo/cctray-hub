@@ -1,19 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "3.3.4"
+	id("org.springframework.boot") version "3.3.5"
 	id("io.spring.dependency-management") version "1.1.6"
 	id("org.jetbrains.kotlin.jvm") version "1.9.25"
 	id("org.jetbrains.kotlin.plugin.spring") version "1.9.25"
 	id("com.adarshr.test-logger") version "4.0.0"
-//	id("org.graalvm.buildtools.native") version "0.9.20"
+//	id("org.graalvm.buildtools.native") version "0.10.3"
 }
 
 group = "name.hennr"
 
 kotlin {
 	jvmToolchain {
-		this.languageVersion.set(JavaLanguageVersion.of(21))
+		languageVersion.set(JavaLanguageVersion.of(21))
 	}
 }
 
