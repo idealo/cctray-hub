@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "3.2.4"
-	id("io.spring.dependency-management") version "1.1.4"
-	id("org.jetbrains.kotlin.jvm") version "1.9.23"
-	id("org.jetbrains.kotlin.plugin.spring") version "1.9.23"
+	id("org.springframework.boot") version "3.3.4"
+	id("io.spring.dependency-management") version "1.1.6"
+	id("org.jetbrains.kotlin.jvm") version "1.9.25"
+	id("org.jetbrains.kotlin.plugin.spring") version "1.9.25"
 	id("com.adarshr.test-logger") version "4.0.0"
 //	id("org.graalvm.buildtools.native") version "0.9.20"
 }
@@ -33,8 +33,8 @@ dependencies {
 
 	// logging
 	implementation("ch.qos.logback:logback-classic")
-	implementation("ch.qos.logback:logback-access")
-	implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+	implementation("ch.qos.logback:logback-access:1.5.8")
+	implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
 
 	// caching
