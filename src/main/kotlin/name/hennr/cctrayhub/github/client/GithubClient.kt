@@ -7,6 +7,7 @@ import name.hennr.cctrayhub.github.dto.GithubResponseCode
 import name.hennr.cctrayhub.github.dto.GithubWorkflowRunsResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.WebClient
@@ -47,7 +48,7 @@ class GithubClient(
                 } else if (response.statusCode() == HttpStatus.NOT_MODIFIED) {
                     handleNotModified(githubGroup, githubRepo, githubWorkflowNameOrId)
                 } else if (response.statusCode().isError) {
-                    handleError(githubGroup, githubRepo, githubWorkflowNameOrId)
+                    handleError(githubGroup, githubRepo, githubWorkflowNameOrId, response.statusCode())
                 } else {
                     handleIsOk(response, githubGroup, githubRepo, githubWorkflowNameOrId)
                 }
@@ -78,8 +79,13 @@ class GithubClient(
         return response.bodyToMono(GithubWorkflowRunsResponse::class.java) // GithubWorkflowRunsResponse marked as SUCCESS per default
     }
 
-    private fun handleError(githubGroup: String, githubRepo: String, githubWorkflowNameOrId: String): Mono<GithubWorkflowRunsResponse> {
-        logger.error("failed to fetch details for repo: $githubGroup/$githubRepo/$githubWorkflowNameOrId")
+    private fun handleError(
+        githubGroup: String,
+        githubRepo: String,
+        githubWorkflowNameOrId: String,
+        statusCode: HttpStatusCode
+    ): Mono<GithubWorkflowRunsResponse> {
+        logger.error("failed to fetch - $statusCode - for repo: $githubGroup/$githubRepo/$githubWorkflowNameOrId")
         return Mono.just(GithubWorkflowRunsResponse(0, emptyArray(), GithubResponseCode.ERROR))
     }
 
