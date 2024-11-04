@@ -33,7 +33,7 @@ dependencies {
 
 	// logging
 	implementation("ch.qos.logback:logback-classic")
-	implementation("ch.qos.logback:logback-access:1.5.8")
+	implementation("ch.qos.logback:logback-access:1.5.12")
 	implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 	implementation("io.github.microutils:kotlin-logging:3.0.5")
 
