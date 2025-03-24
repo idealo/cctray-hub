@@ -30,8 +30,21 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: build docker image
-      run: docker build --platform=linux/arm64 -t hennr/cctray-hub:latest -t hennr/cctray-hub:$(date +%s) .
+    # Log in to GitHub Container Registry
+    - name: Log in to GHCR
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: push image
-      run: docker image push --all-tags hennr/cctray-hub
+    # Build and push the Docker image
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        platforms: linux/arm64
+        tags:
+            ghcr.io/idealo/cctray-hub:latest
+            ghcr.io/idealo/cctray-hub:$(date +%s)
