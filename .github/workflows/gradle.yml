@@ -41,4 +41,3 @@ jobs:
         platforms: linux/arm64
         tags:
             ghcr.io/idealo/cctray-hub:latest
-            ghcr.io/idealo/cctray-hub:$(date +%s)
