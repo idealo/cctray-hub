@@ -12,12 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: login to docker hub
-      uses: docker/login-action@v3
-      with:
-        username: "hennr"
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
     - name: checkout repo
       uses: actions/checkout@v4
 
