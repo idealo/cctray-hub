@@ -1,0 +1,47 @@
+{
+  "extends": [
+    ":prHourlyLimit2",
+    ":prConcurrentLimit10",
+    "group:monorepos",
+    "group:recommended",
+    "workarounds:all"
+  ],
+  "timezone": "Europe/Berlin",
+  "schedule": [
+    "after 8am every weekday",
+    "before 4pm every weekday"
+  ],
+  "automergeSchedule": [
+    "after 8am every weekday",
+    "before 4pm every weekday"
+  ],
+  "minimumReleaseAge": "7 days",
+  "packageRules": [
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
+    },
+    {
+      "matchManagers": [
+        "gradle"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchDepTypes": [
+        "testDependencies"
+      ],
+      "automerge": true
+    }
+  ]
+}
