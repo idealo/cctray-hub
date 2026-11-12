@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.7_6-jre
+FROM eclipse-temurin:21.0.12_8-jre
 USER 1001
 COPY build/libs/cctray-hub.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
